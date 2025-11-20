@@ -1,1 +1,2 @@
-Just my Portfolio Website code, don't bother.
+A Vite + React project.
+Contains my Artwork's portfolio website.
