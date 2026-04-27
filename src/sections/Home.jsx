@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaBehance, FaDiscord } from "react-icons/fa";
 import { FaSteamSymbol } from "react-icons/fa6";
 import ParticlesBackground from "../components/ParticlesBackground";
-import Yuzuriha from "../assets/videos/YuzurihaRender.mp4";
+import Sukuna from "../assets/videos/SukunaRender.mp4";
 
 const socials = [
   { Icon: FaBehance, label: "Behance", href: "https://www.behance.net/sampreetkishan" },
@@ -166,7 +166,7 @@ export default function Home() {
         <div className="relative hidden lg:block">
           <motion.video
             className="absolute top-1/2 -translate-y-1/2 object-contain select-none rounded-lg"
-            src={Yuzuriha}
+            src={Sukuna}
             autoPlay
             loop
             muted

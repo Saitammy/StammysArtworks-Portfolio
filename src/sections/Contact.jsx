@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { FaBehance, FaDiscord } from 'react-icons/fa';
 import { FaSteamSymbol } from 'react-icons/fa6';
