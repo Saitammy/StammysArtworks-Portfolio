@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
-import SukunaRender from "../assets/videos/SukunaRender.mp4";
+import Yuzuriha from "../assets/videos/YuzurihaRender.mp4";
 
 export default function WhatIsSteamArt() {
   const glows = [];
@@ -39,7 +39,7 @@ export default function WhatIsSteamArt() {
           <div ref={videoRef} className="relative w-full max-w-[780px] flex justify-center">
             <motion.video
               className="rounded-lg object-contain select-none"
-              src={SukunaRender}
+              src={Yuzuriha}
               autoPlay
               loop
               muted
