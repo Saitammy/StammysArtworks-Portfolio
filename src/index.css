@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Real Miami';
+  src: url('./assets/fonts/RealMiami.otf') format('opentype'),
+       local('Real Miami');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-real-miami: 'Real Miami', sans-serif;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
   background-color : #000;

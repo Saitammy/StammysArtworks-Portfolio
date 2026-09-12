@@ -73,7 +73,7 @@ export default function Navbar() {
         }`}
       >
         <div className="flex items-center space-x-2">
-          <div className="text-lg sm:text-2xl font-bold text-white">
+          <div className="text-lg sm:text-3xl font-bold text-white font-real-miami tracking-wide mt-2">
             Stammy's Artworks
           </div>
         </div>
