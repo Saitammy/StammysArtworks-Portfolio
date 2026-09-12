@@ -11,8 +11,8 @@ export default function CustomCursor() {
 
     window.addEventListener("mousemove", moveHandler);
 
-    return() => window.removeEventListener("mousemove", moveHandler);
-  })
+    return () => window.removeEventListener("mousemove", moveHandler);
+  }, []);
 
   return (
     <div

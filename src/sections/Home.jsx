@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaBehance, FaDiscord } from "react-icons/fa";
 import { FaSteamSymbol } from "react-icons/fa6";
 import ParticlesBackground from "../components/ParticlesBackground";
-import Sukuna from "../assets/videos/SukunaRender.mp4";
 
 const socials = [
   { Icon: FaBehance, label: "Behance", href: "https://www.behance.net/sampreetkishan" },
@@ -163,20 +162,47 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative hidden lg:block">
-          <motion.video
-            className="absolute top-1/2 -translate-y-1/2 object-contain select-none rounded-lg"
-            src={Sukuna}
-            autoPlay
-            loop
-            muted
-            playsInline
-            style={{ right: "20px", width: "min(27vw, 780px)", maxHeight: "100vh" }}
+        <div className="relative hidden lg:flex items-center justify-center">
+          <motion.div
+            className="relative rounded-2xl p-1 bg-gradient-to-b from-[#b66cc0]/60 via-[#d33bd3]/30 to-[#760aa8]/60 shadow-[0_0_50px_rgba(211,59,211,0.25)] select-none"
+            style={{ width: "min(24vw, 360px)" }}
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.03 }}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-          />
+          >
+            <div className="rounded-[14px] bg-gray-950/90 backdrop-blur-sm p-4 flex flex-col items-center border border-purple-500/20">
+              <div className="w-full flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-xs text-gray-400">
+                <span className="flex items-center gap-1.5 font-medium text-white">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  Featured Steam Artwork
+                </span>
+                <span className="px-2 py-0.5 rounded bg-purple-950/80 text-purple-300 font-mono text-[11px] border border-purple-500/30">
+                  614 × 920
+                </span>
+              </div>
+              
+              <div className="w-full flex gap-1.5 h-[420px] rounded-lg overflow-hidden relative">
+                <div className="flex-1 h-full rounded bg-gradient-to-b from-purple-900/30 via-black to-purple-950/40 border border-purple-500/20 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group">
+                  <div className="w-16 h-16 rounded-full bg-purple-500/10 border border-purple-400/30 flex items-center justify-center mb-4 text-purple-300">
+                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-semibold text-white tracking-wide">Motion Artwork</p>
+                  <p className="text-xs text-gray-400 mt-1">Ready for Admin Upload</p>
+                </div>
+                <div className="w-14 h-full rounded bg-gradient-to-b from-purple-900/20 via-black to-purple-950/30 border border-purple-500/20 flex flex-col items-center justify-center text-[10px] text-gray-500 font-mono">
+                  <span className="rotate-90 whitespace-nowrap tracking-wider text-purple-400/80">SIDE PANEL</span>
+                </div>
+              </div>
+
+              <div className="w-full mt-3 pt-2 text-center text-xs text-gray-400">
+                Custom Animated Steam Profile Showcase
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 

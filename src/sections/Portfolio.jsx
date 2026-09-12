@@ -1,28 +1,12 @@
-import { motion, useMotionValue, useInView } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
-import Sukuna from "../assets/videos/SukunaRender.mp4";
-import Goth from "../assets/videos/GothRender.mp4";
-import Lucia from "../assets/videos/LuciaRender.mp4";
-import Yuzuriha from "../assets/videos/YuzurihaRender.mp4";
-import AmeChan from "../assets/videos/AmeChanRender.mp4";
-import Ilumi from "../assets/videos/IlumiRender.mp4";
-import Lina from "../assets/videos/LinaRender.mp4";
-import Titan from "../assets/videos/TitanRender.mp4";
+import { initialArtworks } from "../data/artworks";
 
 const ITEM_WIDTH_WITH_GAP = 340;
 const RENDER_BUFFER = 2;
 
 export default function Portfolio() {
-  const artworks = [
-    { src: Sukuna, name: "Sukuna" },
-    { src: Goth, name: "Goth Girl" },
-    { src: Lucia, name: "Lucia" },
-    { src: Yuzuriha, name: "Yuzuriha" },
-    { src: AmeChan, name: "Ame Chan" },
-    { src: Ilumi, name: "Ilumi" },
-    { src: Lina, name: "Lina" },
-    { src: Titan, name: "Titan" },
-  ];
+  const artworks = initialArtworks;
 
   const FULL_LENGTH = artworks.length;
   const repeated = [...artworks, ...artworks];
@@ -171,26 +155,55 @@ export default function Portfolio() {
                 title={s.name}
               >
                 {isRendered ? (
-                  <video
-                    src={s.src}
-                    muted
-                    loop
-                    playsInline
-                    onMouseEnter={(e) => {
-                      trackRef.current
-                        ?.querySelectorAll("video")
-                        .forEach((video) => {
-                          if (video !== e.currentTarget) {
-                            video.pause();
-                          }
-                        });
-                      e.currentTarget.play();
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.pause();
-                    }}
-                    className="rounded-xl w-[300px] h-[450px] object-cover shadow-lg hover:scale-105 hover:shadow-[#d33bd3]/50 transition-all duration-500"
-                  />
+                  s.src ? (
+                    <video
+                      src={s.src}
+                      muted
+                      loop
+                      playsInline
+                      onMouseEnter={(e) => {
+                        trackRef.current
+                          ?.querySelectorAll("video")
+                          .forEach((video) => {
+                            if (video !== e.currentTarget) {
+                              video.pause();
+                            }
+                          });
+                        e.currentTarget.play();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.pause();
+                      }}
+                      className="rounded-xl w-[300px] h-[450px] object-cover shadow-lg hover:scale-105 hover:shadow-[#d33bd3]/50 transition-all duration-500"
+                    />
+                  ) : (
+                    <div className="rounded-xl w-[300px] h-[450px] bg-gradient-to-b from-gray-900 via-gray-950 to-black border border-purple-500/30 p-5 shadow-lg hover:scale-105 hover:shadow-[#d33bd3]/50 hover:border-purple-400 transition-all duration-500 flex flex-col justify-between select-none relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-radial from-purple-500/10 via-transparent to-transparent opacity-40 group-hover:opacity-80 transition-opacity" />
+                      
+                      <div className="flex items-center justify-between z-10">
+                        <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-950/80 border border-purple-500/30 text-purple-300">
+                          {s.width} × {s.height}
+                        </span>
+                        <span className="text-[10px] text-gray-400 font-medium">Steam Artwork</span>
+                      </div>
+
+                      <div className="flex flex-col items-center justify-center my-auto z-10 text-center">
+                        <div className="w-14 h-14 rounded-full bg-purple-500/10 border border-purple-400/20 flex items-center justify-center mb-3 text-purple-300 group-hover:scale-110 transition-transform">
+                          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <h3 className="text-lg font-bold text-white tracking-wide">{s.name}</h3>
+                        <p className="text-xs text-purple-300/80 mt-1">{s.category}</p>
+                      </div>
+
+                      <div className="z-10 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-gray-400">
+                        <span>Width: {s.width}px</span>
+                        <span className="text-purple-400 font-mono">Custom Height</span>
+                      </div>
+                    </div>
+                  )
                 ) : (
                   <div className="rounded-xl w-[300px] h-[450px] bg-gray-900/50 flex items-center justify-center text-gray-500">
                     Loading...
