@@ -90,15 +90,6 @@ export default function Navbar() {
             />
           </button>
         </div>
-
-        <div className="hidden lg:block">
-          <a
-            href="#contact"
-            className="bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] text-white px-5 py-2 rounded-full font-medium shadow-lg hover:opacity-90 transition-opacity duration-300"
-          >
-            Reach Out
-          </a>
-        </div>
       </nav>
 
       <OverlayMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />

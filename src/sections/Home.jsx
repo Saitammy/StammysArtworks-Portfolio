@@ -1,8 +1,10 @@
 import React, { useMemo, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaBehance, FaDiscord } from "react-icons/fa";
+import { FaBehance, FaDiscord, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { FaSteamSymbol } from "react-icons/fa6";
 import ParticlesBackground from "../components/ParticlesBackground";
+import { artworks } from "../data/artworks";
 
 const socials = [
   { Icon: FaBehance, label: "Behance", href: "https://www.behance.net/sampreetkishan" },
@@ -43,6 +45,44 @@ export default function Home() {
   const [deleting, setDeleting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Artwork Showcase Carousel States
+  const [artworkIndex, setArtworkIndex] = useState(0);
+  const [isCardHovered, setIsCardHovered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  const currentArtwork = artworks[artworkIndex] || artworks[0];
+
+  const nextRandomArtwork = () => {
+    if (artworks.length <= 1) return;
+    setVideoError(false);
+    setArtworkIndex((prev) => {
+      let next;
+      do {
+        next = Math.floor(Math.random() * artworks.length);
+      } while (next === prev);
+      return next;
+    });
+  };
+
+  const prevArtwork = () => {
+    setVideoError(false);
+    setArtworkIndex((prev) => (prev === 0 ? artworks.length - 1 : prev - 1));
+  };
+
+  const nextArtwork = () => {
+    setVideoError(false);
+    setArtworkIndex((prev) => (prev + 1) % artworks.length);
+  };
+
+  // 9-second auto-switch timer (pauses when user hovers over the card)
+  useEffect(() => {
+    if (isCardHovered || artworks.length <= 1) return;
+    const interval = setInterval(() => {
+      nextRandomArtwork();
+    }, 9000);
+    return () => clearInterval(interval);
+  }, [isCardHovered, artworkIndex]);
+
   useEffect(() => {
     const current = roles[index];
     const timeout = setTimeout(() => {
@@ -77,11 +117,11 @@ export default function Home() {
         />
       </div>
 
-      <div className="relative z-10 h-full w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2">
-        <div className="flex flex-col justify-center h-full text-center lg:text-left relative">
-          <div className="w-full lg:pr-24 mx-auto max-w-[48rem]">
+      <div className="relative z-10 h-full w-full max-w-[1440px] mx-auto px-6 sm:px-12 grid grid-cols-1 lg:grid-cols-2 items-center gap-10 lg:gap-16 xl:gap-20">
+        <div className="flex flex-col justify-center text-center lg:text-left relative">
+          <div className="w-full max-w-2xl mx-auto lg:mx-0">
             <motion.div
-              className="mb-3 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white tracking-wide min-h-[1.6em]"
+              className="mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white tracking-wide min-h-[1.5em]"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -94,26 +134,26 @@ export default function Home() {
             </motion.div>
 
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] drop-shadow-lg"
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] drop-shadow-lg leading-[1.1]"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
             >
-              Hello, I am
+              Hello! I am
               <br />
-              <span className="text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl lg:whitespace-nowrap">
+              <span className="text-white font-bold text-6xl sm:text-7xl md:text-8xl lg:text-9xl lg:whitespace-nowrap">
                 Stammy
               </span>
             </motion.h1>
 
             <motion.p
-              className="mt-6 text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light"
+              className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              I'm a motion designer who transforms static images into <b>Steam Artworks</b>.
-              Adding movement, depth, and visuals to make your <b>Steam</b> profile stand out.
+              I am a motion designer transforming static images into <span className="font-bold font-italic">Steam Artworks</span>.
+              Adding movement, depth, and visuals to make your Steam profile stand out.
             </motion.p>
 
             <motion.div
@@ -122,22 +162,22 @@ export default function Home() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.8 }}
             >
-              <a
-                href="#portfolio"
-                className="px-6 py-3 rounded-full font-medium text-lg text-white bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] shadow-lg hover:scale-105 transition-all"
+              <Link
+                to="/shop"
+                className="w-40 py-3.5 rounded-full font-medium text-lg text-white bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center cursor-pointer"
               >
-                Portfolio
-              </a>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="px-6 py-3 rounded-full text-lg font-medium text-black bg-white hover:bg-gray-200 shadow-lg hover:scale-105 transition-all"
+                Shop
+              </Link>
+              <Link
+                to="/contact"
+                className="w-40 py-3.5 rounded-full text-lg font-medium text-black bg-white hover:bg-gray-200 shadow-lg hover:scale-105 transition-all inline-flex items-center justify-center cursor-pointer"
               >
-                Pricing
-              </button>
+                Contact
+              </Link>
             </motion.div>
 
             <motion.div
-              className="mt-10 flex gap-5 text-2xl md:text-3xl justify-center lg:justify-start"
+              className="mt-12 flex gap-6 text-3xl md:text-4xl justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
@@ -163,46 +203,66 @@ export default function Home() {
         </div>
 
         <div className="relative hidden lg:flex items-center justify-center">
-          <motion.div
-            className="relative rounded-2xl p-1 bg-gradient-to-b from-[#b66cc0]/60 via-[#d33bd3]/30 to-[#760aa8]/60 shadow-[0_0_50px_rgba(211,59,211,0.25)] select-none"
-            style={{ width: "min(24vw, 360px)" }}
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
+          <div
+            className="flex items-center justify-center gap-5 xl:gap-8 select-none"
+            onMouseEnter={() => setIsCardHovered(true)}
+            onMouseLeave={() => setIsCardHovered(false)}
           >
-            <div className="rounded-[14px] bg-gray-950/90 backdrop-blur-sm p-4 flex flex-col items-center border border-purple-500/20">
-              <div className="w-full flex items-center justify-between pb-3 mb-3 border-b border-white/10 text-xs text-gray-400">
-                <span className="flex items-center gap-1.5 font-medium text-white">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Featured Steam Artwork
-                </span>
-                <span className="px-2 py-0.5 rounded bg-purple-950/80 text-purple-300 font-mono text-[11px] border border-purple-500/30">
-                  614 × 920
-                </span>
-              </div>
-              
-              <div className="w-full flex gap-1.5 h-[420px] rounded-lg overflow-hidden relative">
-                <div className="flex-1 h-full rounded bg-gradient-to-b from-purple-900/30 via-black to-purple-950/40 border border-purple-500/20 flex flex-col items-center justify-center p-4 text-center relative overflow-hidden group">
-                  <div className="w-16 h-16 rounded-full bg-purple-500/10 border border-purple-400/30 flex items-center justify-center mb-4 text-purple-300">
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <p className="text-sm font-semibold text-white tracking-wide">Motion Artwork</p>
-                  <p className="text-xs text-gray-400 mt-1">Ready for Admin Upload</p>
-                </div>
-                <div className="w-14 h-full rounded bg-gradient-to-b from-purple-900/20 via-black to-purple-950/30 border border-purple-500/20 flex flex-col items-center justify-center text-[10px] text-gray-500 font-mono">
-                  <span className="rotate-90 whitespace-nowrap tracking-wider text-purple-400/80">SIDE PANEL</span>
-                </div>
-              </div>
+            {/* Left Circular Arrow Button */}
+            <button
+              type="button"
+              onClick={prevArtwork}
+              aria-label="Previous Artwork"
+              className="w-14 h-14 rounded-full bg-[#272134]/90 hover:bg-[#383049] text-white flex items-center justify-center border border-white/10 hover:border-white/30 transition-all hover:scale-110 active:scale-95 cursor-pointer shadow-2xl shrink-0"
+            >
+              <FaArrowLeft className="text-lg text-gray-200" />
+            </button>
 
-              <div className="w-full mt-3 pt-2 text-center text-xs text-gray-400">
-                Custom Animated Steam Profile Showcase
-              </div>
+            {/* Fixed Invisible Stage (Enlarged for desktop) */}
+            <div className="relative w-[360px] sm:w-[400px] xl:w-[440px] 2xl:w-[480px] h-[560px] sm:h-[620px] xl:h-[680px] 2xl:h-[720px] flex items-center justify-center">
+              {artworks.map((art, idx) => {
+                const isActive = idx === artworkIndex;
+                return (
+                  <motion.div
+                    key={art.id}
+                    className="absolute inset-0 flex items-center justify-center"
+                    initial={false}
+                    animate={{
+                      opacity: isActive ? 1 : 0,
+                      zIndex: isActive ? 10 : 0,
+                    }}
+                    transition={{
+                      duration: 0.4,
+                      ease: "easeInOut",
+                    }}
+                    style={{
+                      pointerEvents: isActive ? "auto" : "none",
+                    }}
+                  >
+                    <video
+                      src={art.video}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      preload="auto"
+                      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_15px_60px_rgba(0,0,0,0.9)]"
+                    />
+                  </motion.div>
+                );
+              })}
             </div>
-          </motion.div>
+
+            {/* Right Circular Arrow Button */}
+            <button
+              type="button"
+              onClick={nextArtwork}
+              aria-label="Next Artwork"
+              className="w-14 h-14 rounded-full bg-[#272134]/90 hover:bg-[#383049] text-white flex items-center justify-center border border-white/10 hover:border-white/30 transition-all hover:scale-110 active:scale-95 cursor-pointer shadow-2xl shrink-0"
+            >
+              <FaArrowRight className="text-lg text-gray-200" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -230,11 +290,11 @@ export default function Home() {
               >
                 &times;
               </button>
-              
+
               <h2 className="text-3xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8]">
                 Pricing
               </h2>
-              
+
               <div className="space-y-4">
                 <div className="p-4 border border-gray-700 rounded-lg">
                   <h3 className="text-xl font-semibold text-white">Basic Artwork</h3>
@@ -249,7 +309,7 @@ export default function Home() {
                   <p className="text-gray-300">$200+</p>
                 </div>
               </div>
-              
+
               <p className="text-center text-gray-400 mt-6 text-sm">
                 Contact me for a detailed quote.
               </p>
