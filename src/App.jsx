@@ -5,7 +5,7 @@ import Home from "./sections/Home";
 
 export default function App() {
   return (
-    <div className="relative gradient text-white">
+    <div className="relative text-white">
       <CustomCursor />
       <Navbar />
       <Home />

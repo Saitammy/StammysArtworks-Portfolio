@@ -16,6 +16,28 @@ export default function OverlayMenu({ isOpen, onClose }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Lock background scroll and listen for Escape key when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   const origin = isMobile ? "95% 8%" : "50% 8%";
 
   return(
@@ -36,7 +58,7 @@ export default function OverlayMenu({ isOpen, onClose }) {
             </button>
 
               <ul 
-                className={isMobile ? "flex flex-col space-y-8 text-center" : "flex space-x-8 text-center"}
+                className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8 text-center"
               >
                 {[
                   "Home",

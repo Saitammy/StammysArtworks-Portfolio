@@ -39,10 +39,14 @@ export default function Navbar() {
       }
 
       const currentScrollY = window.scrollY;
+      const diff = currentScrollY - lastScrollY.current;
+
+      // Ignore micro-scroll jitter (< 10px)
+      if (Math.abs(diff) < 10) return;
 
       if (timerId.current) clearTimeout(timerId.current);
 
-      if (currentScrollY > lastScrollY.current) {
+      if (diff > 0) {
         setVisible(false);
       } else {
         setVisible(true);
@@ -73,7 +77,7 @@ export default function Navbar() {
         }`}
       >
         <div className="flex items-center space-x-2">
-          <div className="text-lg sm:text-3xl font-bold text-white font-real-miami tracking-wide mt-2">
+          <div className="text-lg sm:text-xl font-bold text-white tracking-wide mt-2">
             Stammy's Artworks
           </div>
         </div>

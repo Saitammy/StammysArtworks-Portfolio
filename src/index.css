@@ -1,18 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: 'Real Miami';
-  src: url('./assets/fonts/RealMiami.otf') format('opentype'),
-       local('Real Miami');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@theme {
-  --font-real-miami: 'Real Miami', sans-serif;
-}
-
 body {
   font-family: 'Poppins', sans-serif;
   background-color : #000;
@@ -20,12 +7,6 @@ body {
 
 h1, h2 {
   font-family: 'Roboto', sans-serif;
-}
-
-@layer utilities {
-  .gradient {
-    background: linear-gradient(-45deg, #302b63, #00bf8f, #1cd8d2);
-  }
 }
 
 @keyframes blink {
