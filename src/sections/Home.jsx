@@ -122,9 +122,9 @@ export default function Home() {
           <div className="w-full max-w-2xl mx-auto lg:mx-0">
             <motion.div
               className="mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-white tracking-wide min-h-[1.5em]"
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <span>{roles[index].substring(0, subIndex)}</span>
               <span
@@ -135,9 +135,9 @@ export default function Home() {
 
             <motion.h1
               className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] drop-shadow-lg leading-[1.1]"
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 35 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
+              transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
               Hello! I am
               <br />
@@ -148,9 +148,9 @@ export default function Home() {
 
             <motion.p
               className="mt-6 text-lg sm:text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              transition={{ delay: 0.8, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             >
               I am a motion designer transforming static images into <span className="font-bold font-italic">Steam Artworks</span>.
               Adding movement, depth, and visuals to make your Steam profile stand out.
@@ -158,9 +158,9 @@ export default function Home() {
 
             <motion.div
               className="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               <Link
                 to="/shop"
@@ -180,7 +180,7 @@ export default function Home() {
               className="mt-12 flex gap-6 text-3xl md:text-4xl justify-center lg:justify-start"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1 }}
+              transition={{ delay: 1.35, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             >
               {socials.map(({ Icon, label, href }) => (
                 <motion.a
@@ -202,7 +202,17 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative hidden lg:flex items-center justify-center">
+        {/* Artwork Showcase (Loads Last with Smooth Drift & Fade) */}
+        <motion.div
+          className="relative hidden lg:flex items-center justify-center"
+          initial={{ opacity: 0, y: 40, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{
+            delay: 1.65,
+            duration: 1.1,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+        >
           <div
             className="flex items-center justify-center gap-5 xl:gap-8 select-none"
             onMouseEnter={() => setIsCardHovered(true)}
@@ -263,7 +273,7 @@ export default function Home() {
               <FaArrowRight className="text-lg text-gray-200" />
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <AnimatePresence>
