@@ -21,3 +21,62 @@ h1, h2 {
 .blink {
   animation: blink 1s step-start infinite;
 }
+
+/* ==========================================================================
+   Custom Global Scrollbar (Site-wide: Home, Shop, etc.)
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080511;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2b1c3e;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #760aa8;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #d33bd3;
+}
+
+/* Firefox scrollbar for the page */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #2b1c3e #080511;
+}
+
+/* ==========================================================================
+   Custom Cart Modal Scrollbar (Slim & Sleek for Popup)
+   ========================================================================== */
+.custom-cart-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #571457 rgba(255, 255, 255, 0.04);
+}
+
+.custom-cart-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-cart-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+  margin: 4px 0;
+}
+
+.custom-cart-scrollbar::-webkit-scrollbar-thumb {
+  background: #571457;
+  border-radius: 9999px;
+}
+
+.custom-cart-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #d33bd3;
+}
