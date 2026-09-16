@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaBehance, FaDiscord, FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -22,6 +22,34 @@ const glowVariants = {
   },
   tap: { scale: 0.95, y: 0, transition: { duration: 0.08 } },
 };
+
+function HomeShowcaseVideo({ art, isActive }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    if (isActive) {
+      videoRef.current.play().catch(() => {});
+    } else {
+      videoRef.current.pause();
+    }
+  }, [isActive]);
+
+  return (
+    <video
+      ref={videoRef}
+      src={art.video}
+      loop
+      muted
+      playsInline
+      preload={isActive ? "auto" : "metadata"}
+      controlsList="nodownload"
+      disablePictureInPicture
+      onContextMenu={(e) => e.preventDefault()}
+      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_15px_60px_rgba(0,0,0,0.9)] pointer-events-none select-none"
+    />
+  );
+}
 
 export default function Home() {
   const roles = useMemo(
@@ -221,10 +249,16 @@ export default function Home() {
             <div className="relative w-[360px] sm:w-[400px] xl:w-[440px] 2xl:w-[480px] h-[560px] sm:h-[620px] xl:h-[680px] 2xl:h-[720px] flex items-center justify-center">
               {artworks.map((art, idx) => {
                 const isActive = idx === artworkIndex;
+                const isAdjacent =
+                  idx === (artworkIndex + 1) % artworks.length ||
+                  idx === (artworkIndex - 1 + artworks.length) % artworks.length;
+
+                if (!isActive && !isAdjacent) return null;
+
                 return (
                   <motion.div
                     key={art.id}
-                    className="absolute inset-0 flex items-center justify-center"
+                    className="absolute inset-0 flex items-center justify-center select-none"
                     initial={false}
                     animate={{
                       opacity: isActive ? 1 : 0,
@@ -239,18 +273,7 @@ export default function Home() {
                     }}
                     onContextMenu={(e) => e.preventDefault()}
                   >
-                    <video
-                      src={art.video}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                      preload="auto"
-                      controlsList="nodownload"
-                      disablePictureInPicture
-                      onContextMenu={(e) => e.preventDefault()}
-                      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_15px_60px_rgba(0,0,0,0.9)] pointer-events-none select-none"
-                    />
+                    <HomeShowcaseVideo art={art} isActive={isActive} />
                     {/* Transparent Click & Drag Shield */}
                     <div
                       className="absolute inset-0 z-10 select-none"

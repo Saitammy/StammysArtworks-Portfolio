@@ -39,7 +39,7 @@ function ArtworkCard({ art, onAddToCart }) {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           controlsList="nodownload"
           disablePictureInPicture
           onContextMenu={(e) => e.preventDefault()}
