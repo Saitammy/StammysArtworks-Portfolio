@@ -1,8 +1,106 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo, useDeferredValue } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowLeft, FaShoppingCart, FaCheck, FaTimes } from "react-icons/fa";
+import {
+  FaArrowLeft,
+  FaShoppingCart,
+  FaCheck,
+  FaTimes,
+  FaSearch,
+  FaFilter,
+  FaUndo,
+  FaChevronDown,
+} from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { artworks } from "../data/artworks";
+
+function CustomSortDropdown({ sortOption, onSelectSort, isCooldown }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const options = [
+    { value: "default", label: "Default (Featured)" },
+    { value: "alpha-asc", label: "Alphabetical: A → Z" },
+    { value: "alpha-desc", label: "Alphabetical: Z → A" },
+    { value: "price-asc", label: "Price: Low to High" },
+    { value: "price-desc", label: "Price: High to Low" },
+  ];
+
+  const currentOption = options.find((o) => o.value === sortOption) || options[0];
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={dropdownRef} className="relative w-full">
+      {/* Trigger Button with exact matching padding for text and custom arrow */}
+      <button
+        type="button"
+        disabled={isCooldown}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl bg-[#0d0a17] border text-sm transition-all select-none ${
+          isCooldown ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+        } ${
+          isOpen
+            ? "border-[#d33bd3] shadow-[0_0_15px_rgba(211,59,211,0.25)] text-white"
+            : "border-white/10 hover:border-white/20 text-gray-200"
+        }`}
+      >
+        <span className="font-medium truncate">{currentOption.label}</span>
+        <FaChevronDown
+          className={`text-xs text-pink-400 transition-transform duration-200 shrink-0 ml-2 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {/* Custom Dropdown Menu with brand colors and dark glass styling */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute top-full left-0 right-0 mt-2 z-50 bg-[#130f20] backdrop-blur-2xl border border-[#d33bd3]/50 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_25px_rgba(211,59,211,0.25)] overflow-hidden py-1.5"
+          >
+            {options.map((opt) => {
+              const isSelected = sortOption === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  disabled={isCooldown}
+                  onClick={() => {
+                    if (isCooldown) return;
+                    onSelectSort(opt.value);
+                    setIsOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-all cursor-pointer ${
+                    isSelected
+                      ? "bg-gradient-to-r from-[#b66cc0]/25 via-[#d33bd3]/25 to-transparent text-white font-medium border-l-2 border-[#d33bd3]"
+                      : "text-gray-300 hover:text-white hover:bg-white/5 border-l-2 border-transparent"
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {isSelected && (
+                    <FaCheck className="text-pink-400 text-xs shrink-0 ml-2" />
+                  )}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 function ArtworkCard({ art, onAddToCart }) {
   const videoRef = useRef(null);
@@ -98,6 +196,12 @@ export default function Shop() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const timerRef = useRef(null);
 
+  // Search, Category, and Sort Filter States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortOption, setSortOption] = useState("default");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
   const startDismissTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -141,9 +245,34 @@ export default function Shop() {
     startDismissTimer();
   };
 
+  // Anti-spam cooldown state
+  const [isCooldown, setIsCooldown] = useState(false);
+  const cooldownTimerRef = useRef(null);
+
+  const triggerCooldown = (duration = 300) => {
+    setIsCooldown(true);
+    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
+    cooldownTimerRef.current = setTimeout(() => {
+      setIsCooldown(false);
+    }, duration);
+  };
+
+  const handleSelectCategory = (catKey) => {
+    if (isCooldown || selectedCategory === catKey) return;
+    setSelectedCategory(catKey);
+    triggerCooldown(300);
+  };
+
+  const handleSelectSort = (sortKey) => {
+    if (isCooldown || sortOption === sortKey) return;
+    setSortOption(sortKey);
+    triggerCooldown(300);
+  };
+
   useEffect(() => {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
+      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
     };
   }, []);
 
@@ -156,6 +285,71 @@ export default function Shop() {
     (sum, item) => sum + (item.quantity || 1),
     0
   );
+
+  // Category counts
+  const categoryCounts = useMemo(() => {
+    return {
+      all: artworks.length,
+      workshop: artworks.filter((a) => a.category === "Steam Workshop").length,
+      featured: artworks.filter((a) => a.category === "Featured Artwork").length,
+      regular: artworks.filter((a) => a.category === "Regular Artwork").length,
+    };
+  }, []);
+
+  // Deferred search value keeps typing dynamic and responsive without lag
+  const deferredSearch = useDeferredValue(searchQuery);
+
+  // Filter and Sort Pipeline
+  const filteredArtworks = useMemo(() => {
+    let result = [...artworks];
+
+    // Search query filter (matches title, character, category, or tag)
+    if (deferredSearch.trim()) {
+      const q = deferredSearch.toLowerCase().trim();
+      result = result.filter(
+        (a) =>
+          a.title.toLowerCase().includes(q) ||
+          (a.character && a.character.toLowerCase().includes(q)) ||
+          (a.category && a.category.toLowerCase().includes(q)) ||
+          (a.tag && a.tag.toLowerCase().includes(q))
+      );
+    }
+
+    // Category filter
+    if (selectedCategory === "workshop") {
+      result = result.filter((a) => a.category === "Steam Workshop");
+    } else if (selectedCategory === "featured") {
+      result = result.filter((a) => a.category === "Featured Artwork");
+    } else if (selectedCategory === "regular") {
+      result = result.filter((a) => a.category === "Regular Artwork");
+    }
+
+    // Sort order
+    if (sortOption === "alpha-asc") {
+      result.sort((a, b) => a.title.localeCompare(b.title));
+    } else if (sortOption === "alpha-desc") {
+      result.sort((a, b) => b.title.localeCompare(a.title));
+    } else if (sortOption === "price-asc") {
+      result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (sortOption === "price-desc") {
+      result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    }
+
+    return result;
+  }, [deferredSearch, selectedCategory, sortOption]);
+
+  const hasActiveFilters =
+    searchQuery.trim() !== "" ||
+    selectedCategory !== "all" ||
+    sortOption !== "default";
+
+  const handleResetFilters = () => {
+    if (isCooldown && !hasActiveFilters) return;
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setSortOption("default");
+    triggerCooldown(300);
+  };
 
   return (
     <motion.div
@@ -283,7 +477,7 @@ export default function Shop() {
       </AnimatePresence>
 
       {/* Top Navigation Bar */}
-      <header className="w-full max-w-7xl mx-auto px-6 sm:px-10 py-8 flex items-center justify-between">
+      <header className="w-full max-w-[1600px] mx-auto px-6 sm:px-10 py-8 flex items-center justify-between">
         <Link
           to="/"
           className="inline-flex items-center gap-2.5 text-gray-400 hover:text-white transition-colors text-sm sm:text-base font-medium group cursor-pointer"
@@ -309,9 +503,9 @@ export default function Shop() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 sm:px-10 pb-20">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 sm:px-10 pb-24">
         {/* Header Section */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8]">
             Steam Artworks
           </h1>
@@ -320,11 +514,266 @@ export default function Shop() {
           </p>
         </div>
 
-        {/* Artworks Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-          {artworks.map((art) => (
-            <ArtworkCard key={art.id} art={art} onAddToCart={handleAddToCart} />
-          ))}
+        {/* Two-Column Layout: Left Sticky Filter Sidebar + Right Artwork Grid */}
+        <div className="flex flex-col lg:flex-row items-start gap-8 xl:gap-10">
+          {/* Mobile Filter Toggle */}
+          <div className="lg:hidden w-full flex items-center justify-between gap-3 bg-[#120f1e]/90 border border-white/10 rounded-xl p-3 backdrop-blur-xl">
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen((prev) => !prev)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#b66cc0]/20 to-[#d33bd3]/20 border border-[#d33bd3]/40 text-white text-sm font-medium cursor-pointer"
+            >
+              <FaFilter className="text-pink-400 text-xs" />
+              <span>{mobileFiltersOpen ? "Hide Filters" : "Filters & Search"}</span>
+              {hasActiveFilters && (
+                <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
+              )}
+            </button>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="text-xs text-pink-400 hover:text-pink-300 font-medium transition-colors cursor-pointer"
+              >
+                Reset Filters
+              </button>
+            )}
+          </div>
+
+          {/* Desktop Left Sticky Filter Panel & Mobile Collapsible Filter Drawer */}
+          <aside
+            className={`relative z-30 w-full lg:w-72 xl:w-80 shrink-0 lg:sticky lg:top-8 bg-[#120f1e]/90 border border-white/10 rounded-2xl p-5 sm:p-6 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.5)] transition-all ${
+              mobileFiltersOpen ? "block" : "hidden lg:block"
+            }`}
+          >
+            {/* Top Cooldown Loading Bar */}
+            <div
+              className={`absolute top-0 left-4 right-4 h-[2px] rounded-full bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#f748f7] transition-all duration-300 ${
+                isCooldown ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0 pointer-events-none"
+              }`}
+            />
+
+            {/* Panel Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+              <div className="flex items-center gap-2 text-white font-semibold text-base">
+                <FaFilter className="text-pink-400 text-sm" />
+                <span>Filters</span>
+              </div>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  disabled={isCooldown}
+                  onClick={handleResetFilters}
+                  className="text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1.5 font-medium transition-colors cursor-pointer py-1 px-2 rounded-md hover:bg-white/5 disabled:opacity-50"
+                >
+                  <FaUndo className="text-[10px]" />
+                  <span>Reset</span>
+                </button>
+              )}
+            </div>
+
+            {/* Search Input */}
+            <div className="mb-6">
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                Search Artworks
+              </label>
+              <div className="relative">
+                <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search character, title..."
+                  className="w-full bg-[#0d0a17] border border-white/10 focus:border-[#d33bd3] rounded-xl pl-9 pr-8 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d33bd3] transition-all"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors cursor-pointer p-0.5"
+                  >
+                    <FaTimes className="text-xs" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Category Filter */}
+            <div className="mb-6">
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2.5">
+                Artwork Type
+              </label>
+              <div className="space-y-1.5 relative">
+                {[
+                  { key: "all", label: "All Artworks", count: categoryCounts.all },
+                  { key: "workshop", label: "Steam Workshops", count: categoryCounts.workshop },
+                  { key: "featured", label: "Featured Artworks", count: categoryCounts.featured },
+                  { key: "regular", label: "Regular Artworks", count: categoryCounts.regular },
+                ].map((cat) => {
+                  const isActive = selectedCategory === cat.key;
+                  return (
+                    <button
+                      key={cat.key}
+                      type="button"
+                      disabled={isCooldown}
+                      onClick={() => handleSelectCategory(cat.key)}
+                      className={`relative w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm transition-all select-none ${
+                        isCooldown && !isActive ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+                      } ${
+                        isActive
+                          ? "text-white font-semibold"
+                          : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                      }`}
+                    >
+                      {/* Animated pill background that smoothly slides between buttons */}
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeCategoryPill"
+                          className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#b66cc0]/25 via-[#d33bd3]/25 to-[#760aa8]/25 border border-[#d33bd3]/60 shadow-[0_0_20px_rgba(211,59,211,0.2)] pointer-events-none"
+                          transition={{ type: "spring", stiffness: 450, damping: 35 }}
+                        />
+                      )}
+
+                      <span className="relative z-10">{cat.label}</span>
+                      <span
+                        className={`relative z-10 text-[11px] px-2 py-0.5 rounded-full font-mono font-medium transition-colors ${
+                          isActive
+                            ? "bg-[#d33bd3]/35 text-pink-200 border border-[#d33bd3]/40"
+                            : "bg-white/5 text-gray-400"
+                        }`}
+                      >
+                        {cat.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Sort Options */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2.5">
+                Sort By
+              </label>
+              <CustomSortDropdown
+                sortOption={sortOption}
+                onSelectSort={handleSelectSort}
+                isCooldown={isCooldown}
+              />
+            </div>
+          </aside>
+
+          {/* Right Column: Active Filter Chips + Artwork Grid */}
+          <div className="flex-1 min-w-0 w-full">
+            {/* Active Filters Bar */}
+            {hasActiveFilters && (
+              <div className="mb-6 flex flex-wrap items-center gap-2 text-xs">
+                <span className="text-gray-400 font-medium mr-1">Active:</span>
+
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d33bd3]/15 border border-[#d33bd3]/30 text-pink-200">
+                    <span>"{searchQuery}"</span>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="hover:text-white transition-colors cursor-pointer ml-0.5"
+                    >
+                      <FaTimes className="text-[10px]" />
+                    </button>
+                  </span>
+                )}
+
+                {selectedCategory !== "all" && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d33bd3]/15 border border-[#d33bd3]/30 text-pink-200">
+                    <span>
+                      {selectedCategory === "workshop"
+                        ? "Steam Workshop"
+                        : selectedCategory === "featured"
+                        ? "Featured Artwork"
+                        : "Regular Artwork"}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={isCooldown}
+                      onClick={() => handleSelectCategory("all")}
+                      className="hover:text-white transition-colors cursor-pointer ml-0.5 disabled:opacity-50"
+                    >
+                      <FaTimes className="text-[10px]" />
+                    </button>
+                  </span>
+                )}
+
+                {sortOption !== "default" && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#d33bd3]/15 border border-[#d33bd3]/30 text-pink-200">
+                    <span>
+                      {sortOption === "alpha-asc"
+                        ? "A → Z"
+                        : sortOption === "alpha-desc"
+                        ? "Z → A"
+                        : sortOption === "price-asc"
+                        ? "Price: Low to High"
+                        : "Price: High to Low"}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={isCooldown}
+                      onClick={() => handleSelectSort("default")}
+                      className="hover:text-white transition-colors cursor-pointer ml-0.5 disabled:opacity-50"
+                    >
+                      <FaTimes className="text-[10px]" />
+                    </button>
+                  </span>
+                )}
+
+                <button
+                  type="button"
+                  disabled={isCooldown}
+                  onClick={handleResetFilters}
+                  className="text-xs text-gray-400 hover:text-white transition-colors cursor-pointer ml-2 underline underline-offset-2 disabled:opacity-50"
+                >
+                  Clear all
+                </button>
+              </div>
+            )}
+
+            {/* Grid or Empty State with Smooth Fast Animations */}
+            {/* Grid or Empty State with Lightweight GPU-Accelerated Transition */}
+            {filteredArtworks.length > 0 ? (
+              <motion.div
+                key={`${selectedCategory}-${sortOption}`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.18, ease: "easeOut" }}
+                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8"
+              >
+                {filteredArtworks.map((art) => (
+                  <ArtworkCard
+                    key={art.id}
+                    art={art}
+                    onAddToCart={handleAddToCart}
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <div className="w-full py-20 px-6 rounded-2xl bg-[#120f1e]/50 border border-white/10 text-center flex flex-col items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 mb-4">
+                  <FaSearch className="text-2xl" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">No Artworks Found</h3>
+                <p className="text-sm text-gray-400 max-w-md mb-6 leading-relaxed">
+                  No artworks matched your search query or selected filters. Try broadening your criteria or reset your filters.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  className="px-5 py-2.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8] hover:shadow-[0_0_20px_rgba(211,59,211,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+                >
+                  <FaUndo className="text-xs" />
+                  <span>Reset All Filters</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </main>
     </motion.div>

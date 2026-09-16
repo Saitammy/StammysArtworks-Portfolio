@@ -11,7 +11,7 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Adam Smasher.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 15.0,
+    price: 7.0,
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Ceruledge.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Daenerys Targaryen.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 15.0,
+    price: 10.0,
   },
   {
     id: 5,
@@ -51,7 +51,7 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Daki.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 16.0,
+    price: 15.0,
   },
   {
     id: 6,
@@ -71,7 +71,7 @@ export const artworks = [
     dimensions: "614 × 824",
     video: "/artworks/Frieren.mp4",
     tag: "Featured Showcase",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 8,
@@ -81,7 +81,7 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Gun Girl.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 14.0,
+    price: 15.0,
   },
   {
     id: 9,
@@ -91,7 +91,7 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Hello Kitty.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 14.0,
+    price: 8.0,
   },
   {
     id: 10,
@@ -101,7 +101,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Illumi.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 7.0,
   },
   {
     id: 11,
@@ -111,7 +111,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Kei Tsukishima.mp4",
     tag: "Workshop Showcase",
-    price: 14.0,
+    price: 8.0,
   },
   {
     id: 12,
@@ -121,7 +121,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Kinger.mp4",
     tag: "Workshop Showcase",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 13,
@@ -131,7 +131,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Kokushibo.mp4",
     tag: "Workshop Showcase",
-    price: 15.0,
+    price: 10.0,
   },
   {
     id: 14,
@@ -141,7 +141,7 @@ export const artworks = [
     dimensions: "614 × 824",
     video: "/artworks/Lina.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 15,
@@ -151,7 +151,7 @@ export const artworks = [
     dimensions: "614 × 824",
     video: "/artworks/Lucia.mp4",
     tag: "Featured Showcase",
-    price: 14.0,
+    price: 12.0,
   },
   {
     id: 16,
@@ -161,7 +161,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Lucy x David.mp4",
     tag: "Main & Side Panel",
-    price: 15.0,
+    price: 10.0,
   },
   {
     id: 17,
@@ -181,7 +181,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Misty.mp4",
     tag: "Workshop Showcase",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 19,
@@ -211,7 +211,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Rebecca Smasher.mp4",
     tag: "Workshop Showcase",
-    price: 14.0,
+    price: 10.0,
   },
   {
     id: 22,
@@ -221,7 +221,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Rey Ayanami.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 15.0,
   },
   {
     id: 23,
@@ -231,7 +231,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Reze.mp4",
     tag: "Main & Side Panel",
-    price: 15.0,
+    price: 10.0,
   },
   {
     id: 24,
@@ -241,7 +241,7 @@ export const artworks = [
     dimensions: "626 × 824",
     video: "/artworks/Rukia Kuchiki.mp4",
     tag: "Workshop Showcase",
-    price: 14.0,
+    price: 15.0,
   },
   {
     id: 25,
@@ -251,7 +251,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Scimitar.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 7.0,
   },
   {
     id: 26,
@@ -261,7 +261,7 @@ export const artworks = [
     dimensions: "614 × 944",
     video: "/artworks/Sukuna.mp4",
     tag: "Main & Side Panel",
-    price: 14.0,
+    price: 15.0,
   },
   {
     id: 27,
@@ -271,6 +271,6 @@ export const artworks = [
     dimensions: "626 × 944",
     video: "/artworks/Yuzuriha.mp4",
     tag: "5-Panel Sliced Workshop",
-    price: 15.0,
+    price: 10.0,
   },
 ];
