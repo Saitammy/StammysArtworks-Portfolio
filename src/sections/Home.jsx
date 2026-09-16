@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { FaBehance, FaDiscord, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { FaSteamSymbol } from "react-icons/fa6";
 import ParticlesBackground from "../components/ParticlesBackground";
@@ -23,17 +23,6 @@ const glowVariants = {
   tap: { scale: 0.95, y: 0, transition: { duration: 0.08 } },
 };
 
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-};
-
-const modalVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.9 },
-  visible: { opacity: 1, y: 0, scale: 1 },
-  exit: { opacity: 0, y: 50, scale: 0.9 },
-};
-
 export default function Home() {
   const roles = useMemo(
     () => ["Motion Designing", "Steam Profiles", "Character Animation"],
@@ -43,18 +32,13 @@ export default function Home() {
   const [index, setIndex] = useState(0);
   const [subIndex, setSubIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Artwork Showcase Carousel States
   const [artworkIndex, setArtworkIndex] = useState(0);
   const [isCardHovered, setIsCardHovered] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-
-  const currentArtwork = artworks[artworkIndex] || artworks[0];
 
   const nextRandomArtwork = () => {
     if (artworks.length <= 1) return;
-    setVideoError(false);
     setArtworkIndex((prev) => {
       let next;
       do {
@@ -65,12 +49,10 @@ export default function Home() {
   };
 
   const prevArtwork = () => {
-    setVideoError(false);
     setArtworkIndex((prev) => (prev === 0 ? artworks.length - 1 : prev - 1));
   };
 
   const nextArtwork = () => {
-    setVideoError(false);
     setArtworkIndex((prev) => (prev + 1) % artworks.length);
   };
 
@@ -101,7 +83,14 @@ export default function Home() {
   }, [subIndex, index, deleting, roles]);
 
   return (
-    <section id="home" className="w-full h-screen relative bg-black overflow-hidden">
+    <motion.section
+      id="home"
+      className="w-full h-screen relative bg-black overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
       <ParticlesBackground />
 
       <div className="absolute inset-0">
@@ -208,7 +197,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 40, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{
-            delay: 1.65,
+            delay: 1.3,
             duration: 1.1,
             ease: [0.16, 1, 0.3, 1],
           }}
@@ -275,59 +264,6 @@ export default function Home() {
           </div>
         </motion.div>
       </div>
-
-      <AnimatePresence>
-        {isModalOpen && (
-          <>
-            <motion.div
-              onClick={() => setIsModalOpen(false)}
-              className="fixed inset-0 bg-black/70 z-40 cursor-pointer"
-              variants={backdropVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-            />
-            <motion.div
-              className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-900 text-white p-8 rounded-lg shadow-xl w-full max-w-md"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-3 right-4 text-gray-400 hover:text-white text-3xl"
-              >
-                &times;
-              </button>
-
-              <h2 className="text-3xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#b66cc0] via-[#d33bd3] to-[#760aa8]">
-                Pricing
-              </h2>
-
-              <div className="space-y-4">
-                <div className="p-4 border border-gray-700 rounded-lg">
-                  <h3 className="text-xl font-semibold text-white">Basic Artwork</h3>
-                  <p className="text-gray-300">$50</p>
-                </div>
-                <div className="p-4 border border-gray-700 rounded-lg">
-                  <h3 className="text-xl font-semibold text-white">Standard Animation</h3>
-                  <p className="text-gray-300">$100</p>
-                </div>
-                <div className="p-4 border border-gray-700 rounded-lg">
-                  <h3 className="text-xl font-semibold text-white">Premium Character Rig</h3>
-                  <p className="text-gray-300">$200+</p>
-                </div>
-              </div>
-
-              <p className="text-center text-gray-400 mt-6 text-sm">
-                Contact me for a detailed quote.
-              </p>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-    </section>
+    </motion.section>
   );
 }
