@@ -70,7 +70,7 @@ export const artworks = [
     category: "Regular Artwork",
     dimensions: "614 × 824",
     video: "/artworks/Frieren.mp4",
-    tag: "Featured Showcase",
+    tag: "Main & Side Panel",
     price: 10.0,
   },
   {
@@ -110,7 +110,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Kei Tsukishima.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 8.0,
   },
   {
@@ -120,7 +120,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Kinger.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 10.0,
   },
   {
@@ -130,7 +130,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Kokushibo.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 10.0,
   },
   {
@@ -150,7 +150,7 @@ export const artworks = [
     category: "Regular Artwork",
     dimensions: "614 × 824",
     video: "/artworks/Lucia.mp4",
-    tag: "Featured Showcase",
+    tag: "Main & Side Panel",
     price: 12.0,
   },
   {
@@ -180,7 +180,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Misty.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 10.0,
   },
   {
@@ -210,7 +210,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Rebecca Smasher.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 10.0,
   },
   {
@@ -240,7 +240,7 @@ export const artworks = [
     category: "Steam Workshop",
     dimensions: "626 × 824",
     video: "/artworks/Rukia Kuchiki.mp4",
-    tag: "Workshop Showcase",
+    tag: "5-Panel Sliced Workshop",
     price: 15.0,
   },
   {

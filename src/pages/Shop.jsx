@@ -104,6 +104,26 @@ function CustomSortDropdown({ sortOption, onSelectSort, isCooldown }) {
 
 function ArtworkCard({ art, onAddToCart }) {
   const videoRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: "250px" } // Preload 250px before card scrolls into viewport
+    );
+
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      observer.observe(currentContainer);
+    }
+
+    return () => {
+      if (currentContainer) observer.unobserve(currentContainer);
+    };
+  }, []);
 
   const handleMouseEnter = () => {
     if (videoRef.current) {
@@ -122,6 +142,7 @@ function ArtworkCard({ art, onAddToCart }) {
 
   return (
     <div
+      ref={containerRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className="group relative flex flex-col justify-between rounded-2xl bg-[#120f1e]/80 border border-white/10 hover:border-[#d33bd3]/60 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(211,59,211,0.2)] hover:-translate-y-2 p-5"
@@ -131,18 +152,24 @@ function ArtworkCard({ art, onAddToCart }) {
         className="relative aspect-[10/15] w-full rounded-xl overflow-hidden bg-black/80 flex items-center justify-center border border-white/5 select-none"
         onContextMenu={(e) => e.preventDefault()}
       >
-        <video
-          ref={videoRef}
-          src={art.video}
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          controlsList="nodownload"
-          disablePictureInPicture
-          onContextMenu={(e) => e.preventDefault()}
-          className="w-full h-full object-cover pointer-events-none select-none"
-        />
+        {isInView ? (
+          <video
+            ref={videoRef}
+            src={art.video}
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            controlsList="nodownload"
+            disablePictureInPicture
+            onContextMenu={(e) => e.preventDefault()}
+            className="w-full h-full object-cover pointer-events-none select-none transition-opacity duration-300"
+          />
+        ) : (
+          <div className="w-full h-full bg-[#0d0a17] flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full border-2 border-[#d33bd3]/20 border-t-[#d33bd3] animate-spin" />
+          </div>
+        )}
         {/* Transparent Protection Shield */}
         <div
           className="absolute inset-0 z-10 select-none"
@@ -286,13 +313,18 @@ export default function Shop() {
     0
   );
 
+  // Helper to match categories flexibly
+  const isWorkshop = (cat) => cat && /workshop/i.test(cat);
+  const isFeatured = (cat) => cat && /featured/i.test(cat);
+  const isRegular = (cat) => cat && /regular/i.test(cat);
+
   // Category counts
   const categoryCounts = useMemo(() => {
     return {
       all: artworks.length,
-      workshop: artworks.filter((a) => a.category === "Steam Workshop").length,
-      featured: artworks.filter((a) => a.category === "Featured Artwork").length,
-      regular: artworks.filter((a) => a.category === "Regular Artwork").length,
+      workshop: artworks.filter((a) => isWorkshop(a.category)).length,
+      featured: artworks.filter((a) => isFeatured(a.category)).length,
+      regular: artworks.filter((a) => isRegular(a.category)).length,
     };
   }, []);
 
@@ -317,11 +349,11 @@ export default function Shop() {
 
     // Category filter
     if (selectedCategory === "workshop") {
-      result = result.filter((a) => a.category === "Steam Workshop");
+      result = result.filter((a) => isWorkshop(a.category));
     } else if (selectedCategory === "featured") {
-      result = result.filter((a) => a.category === "Featured Artwork");
+      result = result.filter((a) => isFeatured(a.category));
     } else if (selectedCategory === "regular") {
-      result = result.filter((a) => a.category === "Regular Artwork");
+      result = result.filter((a) => isRegular(a.category));
     }
 
     // Sort order
@@ -337,6 +369,48 @@ export default function Shop() {
 
     return result;
   }, [deferredSearch, selectedCategory, sortOption]);
+
+  // Batch loading & Infinite Scroll configuration
+  const BATCH_SIZE = 12;
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const sentinelRef = useRef(null);
+
+  // Reset pagination to first batch whenever filters, search, or sort change
+  useEffect(() => {
+    setVisibleCount(BATCH_SIZE);
+  }, [deferredSearch, selectedCategory, sortOption]);
+
+  const hasMore = visibleCount < filteredArtworks.length;
+
+  useEffect(() => {
+    if (!hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) =>
+            Math.min(prev + BATCH_SIZE, filteredArtworks.length)
+          );
+        }
+      },
+      {
+        root: null,
+        rootMargin: "350px", // Preloads next batch before reaching the very bottom
+        threshold: 0.1,
+      }
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) observer.observe(currentSentinel);
+
+    return () => {
+      if (currentSentinel) observer.unobserve(currentSentinel);
+    };
+  }, [hasMore, filteredArtworks.length]);
+
+  const displayedArtworks = useMemo(() => {
+    return filteredArtworks.slice(0, visibleCount);
+  }, [filteredArtworks, visibleCount]);
 
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
@@ -736,24 +810,36 @@ export default function Shop() {
               </div>
             )}
 
-            {/* Grid or Empty State with Smooth Fast Animations */}
-            {/* Grid or Empty State with Lightweight GPU-Accelerated Transition */}
+            {/* Grid or Empty State with Infinite Scroll */}
             {filteredArtworks.length > 0 ? (
-              <motion.div
-                key={`${selectedCategory}-${sortOption}`}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18, ease: "easeOut" }}
-                className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8"
-              >
-                {filteredArtworks.map((art) => (
-                  <ArtworkCard
-                    key={art.id}
-                    art={art}
-                    onAddToCart={handleAddToCart}
-                  />
-                ))}
-              </motion.div>
+              <div className="flex flex-col w-full">
+                <motion.div
+                  key={`${selectedCategory}-${sortOption}`}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 xl:gap-8"
+                >
+                  {displayedArtworks.map((art) => (
+                    <ArtworkCard
+                      key={art.id}
+                      art={art}
+                      onAddToCart={handleAddToCart}
+                    />
+                  ))}
+                </motion.div>
+
+                {/* Infinite Scroll Sentinel / Subtle Brand Loader */}
+                {hasMore && (
+                  <div
+                    ref={sentinelRef}
+                    className="w-full py-12 flex flex-col items-center justify-center gap-3 text-gray-400"
+                  >
+                    <div className="w-7 h-7 rounded-full border-2 border-[#d33bd3]/20 border-t-[#d33bd3] animate-spin" />
+                    <span className="text-xs text-gray-400 font-medium">Loading more artworks...</span>
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="w-full py-20 px-6 rounded-2xl bg-[#120f1e]/50 border border-white/10 text-center flex flex-col items-center justify-center">
                 <div className="w-16 h-16 rounded-full bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400 mb-4">
