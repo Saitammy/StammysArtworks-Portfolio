@@ -2,6 +2,8 @@
 // Drop your rendered .mp4 or .webm files into the "public/artworks/" folder.
 // Add or edit items in this list to display them in the showcase card.
 
+import { title } from "framer-motion/client";
+
 export const artworks = [
   {
     id: 1,
@@ -272,5 +274,15 @@ export const artworks = [
     video: "/artworks/Yuzuriha.mp4",
     tag: "5-Panel Sliced Workshop",
     price: 10.0,
+  },
+  {
+    id: 28,
+    title: "Yuzuriha | Hell's Paradise",
+    character: "Yuzuriha",
+    category: "Featured Artwork",
+    dimensions: "630 × 944",
+    video: "/artworks/Yuzuriha New.mp4",
+    tag: "Featured Artwork",
+    price: 15.0,
   },
 ];

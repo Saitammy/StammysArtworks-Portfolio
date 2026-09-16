@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaBehance, FaDiscord, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { FaSteamSymbol } from "react-icons/fa6";
 import ParticlesBackground from "../components/ParticlesBackground";
@@ -39,10 +39,11 @@ function HomeShowcaseVideo({ art, isActive }) {
     <video
       ref={videoRef}
       src={art.video}
+      autoPlay
       loop
       muted
       playsInline
-      preload={isActive ? "auto" : "metadata"}
+      preload="auto"
       controlsList="nodownload"
       disablePictureInPicture
       onContextMenu={(e) => e.preventDefault()}
@@ -65,17 +66,6 @@ export default function Home() {
   const [artworkIndex, setArtworkIndex] = useState(0);
   const [isCardHovered, setIsCardHovered] = useState(false);
 
-  const nextRandomArtwork = () => {
-    if (artworks.length <= 1) return;
-    setArtworkIndex((prev) => {
-      let next;
-      do {
-        next = Math.floor(Math.random() * artworks.length);
-      } while (next === prev);
-      return next;
-    });
-  };
-
   const prevArtwork = () => {
     setArtworkIndex((prev) => (prev === 0 ? artworks.length - 1 : prev - 1));
   };
@@ -88,10 +78,12 @@ export default function Home() {
   useEffect(() => {
     if (isCardHovered || artworks.length <= 1) return;
     const interval = setInterval(() => {
-      nextRandomArtwork();
+      nextArtwork();
     }, 9000);
     return () => clearInterval(interval);
   }, [isCardHovered, artworkIndex]);
+
+  const currentArt = artworks[artworkIndex] || artworks[0];
 
   useEffect(() => {
     const current = roles[index];
@@ -247,41 +239,29 @@ export default function Home() {
 
             {/* Fixed Invisible Stage (Enlarged for desktop) */}
             <div className="relative w-[360px] sm:w-[400px] xl:w-[440px] 2xl:w-[480px] h-[560px] sm:h-[620px] xl:h-[680px] 2xl:h-[720px] flex items-center justify-center">
-              {artworks.map((art, idx) => {
-                const isActive = idx === artworkIndex;
-                const isAdjacent =
-                  idx === (artworkIndex + 1) % artworks.length ||
-                  idx === (artworkIndex - 1 + artworks.length) % artworks.length;
-
-                if (!isActive && !isAdjacent) return null;
-
-                return (
+              <AnimatePresence mode="sync">
+                {currentArt && (
                   <motion.div
-                    key={art.id}
+                    key={currentArt.id}
                     className="absolute inset-0 flex items-center justify-center select-none"
-                    initial={false}
-                    animate={{
-                      opacity: isActive ? 1 : 0,
-                      zIndex: isActive ? 10 : 0,
-                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     transition={{
-                      duration: 0.4,
+                      duration: 0.6,
                       ease: "easeInOut",
-                    }}
-                    style={{
-                      pointerEvents: isActive ? "auto" : "none",
                     }}
                     onContextMenu={(e) => e.preventDefault()}
                   >
-                    <HomeShowcaseVideo art={art} isActive={isActive} />
+                    <HomeShowcaseVideo art={currentArt} isActive={true} />
                     {/* Transparent Click & Drag Shield */}
                     <div
                       className="absolute inset-0 z-10 select-none"
                       onContextMenu={(e) => e.preventDefault()}
                     />
                   </motion.div>
-                );
-              })}
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Right Circular Arrow Button */}
