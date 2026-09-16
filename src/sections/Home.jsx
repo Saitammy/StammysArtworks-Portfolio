@@ -237,6 +237,7 @@ export default function Home() {
                     style={{
                       pointerEvents: isActive ? "auto" : "none",
                     }}
+                    onContextMenu={(e) => e.preventDefault()}
                   >
                     <video
                       src={art.video}
@@ -245,7 +246,15 @@ export default function Home() {
                       muted
                       playsInline
                       preload="auto"
-                      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_15px_60px_rgba(0,0,0,0.9)]"
+                      controlsList="nodownload"
+                      disablePictureInPicture
+                      onContextMenu={(e) => e.preventDefault()}
+                      className="max-w-full max-h-full object-contain rounded-xl shadow-[0_15px_60px_rgba(0,0,0,0.9)] pointer-events-none select-none"
+                    />
+                    {/* Transparent Click & Drag Shield */}
+                    <div
+                      className="absolute inset-0 z-10 select-none"
+                      onContextMenu={(e) => e.preventDefault()}
                     />
                   </motion.div>
                 );

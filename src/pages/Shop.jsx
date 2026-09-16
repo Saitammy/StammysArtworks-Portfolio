@@ -29,7 +29,10 @@ function ArtworkCard({ art, onAddToCart }) {
       className="group relative flex flex-col justify-between rounded-2xl bg-[#120f1e]/80 border border-white/10 hover:border-[#d33bd3]/60 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(211,59,211,0.2)] hover:-translate-y-2 p-5"
     >
       {/* Video Preview Frame */}
-      <div className="relative aspect-[10/15] w-full rounded-xl overflow-hidden bg-black/80 flex items-center justify-center border border-white/5">
+      <div
+        className="relative aspect-[10/15] w-full rounded-xl overflow-hidden bg-black/80 flex items-center justify-center border border-white/5 select-none"
+        onContextMenu={(e) => e.preventDefault()}
+      >
         <video
           ref={videoRef}
           src={art.video}
@@ -37,10 +40,18 @@ function ArtworkCard({ art, onAddToCart }) {
           muted
           playsInline
           preload="auto"
-          className="w-full h-full object-cover"
+          controlsList="nodownload"
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
+          className="w-full h-full object-cover pointer-events-none select-none"
+        />
+        {/* Transparent Protection Shield */}
+        <div
+          className="absolute inset-0 z-10 select-none"
+          onContextMenu={(e) => e.preventDefault()}
         />
         {art.tag && (
-          <span className="absolute top-3 left-3 px-3 py-1 text-[11px] font-medium tracking-wide rounded-full bg-black/70 backdrop-blur-md text-pink-300 border border-pink-500/30">
+          <span className="absolute top-3 left-3 z-20 px-3 py-1 text-[11px] font-medium tracking-wide rounded-full bg-black/70 backdrop-blur-md text-pink-300 border border-pink-500/30 select-none pointer-events-none">
             {art.tag}
           </span>
         )}
@@ -194,12 +205,22 @@ export default function Shop() {
                 <div key={item.id} className="flex items-start justify-between gap-3 pt-2.5 first:pt-0">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     {/* Thumbnail */}
-                    <div className="w-12 h-16 rounded-lg overflow-hidden bg-black/80 shrink-0 border border-white/10 flex items-center justify-center">
+                    <div
+                      className="relative w-12 h-16 rounded-lg overflow-hidden bg-black/80 shrink-0 border border-white/10 flex items-center justify-center select-none"
+                      onContextMenu={(e) => e.preventDefault()}
+                    >
                       <video
                         src={item.video}
                         muted
                         playsInline
-                        className="w-full h-full object-cover"
+                        controlsList="nodownload"
+                        disablePictureInPicture
+                        onContextMenu={(e) => e.preventDefault()}
+                        className="w-full h-full object-cover pointer-events-none select-none"
+                      />
+                      <div
+                        className="absolute inset-0 z-10 select-none"
+                        onContextMenu={(e) => e.preventDefault()}
                       />
                     </div>
 

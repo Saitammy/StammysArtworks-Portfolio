@@ -5,6 +5,12 @@ body {
   background-color : #000;
 }
 
+video, img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 h1, h2 {
   font-family: 'Roboto', sans-serif;
 }
