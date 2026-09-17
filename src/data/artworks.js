@@ -2,8 +2,6 @@
 // Drop your rendered .mp4 or .webm files into the "public/artworks/" folder.
 // Add or edit items in this list to display them in the showcase card.
 
-import { title } from "framer-motion/client";
-
 export const artworks = [
   {
     id: 1,
